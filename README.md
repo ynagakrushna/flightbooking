@@ -5,6 +5,9 @@
 set PASSWORD=yourdbpassword;
 set airways_jwtPrivateKey=yourprivatekey;
 
+### database
+Refer airways.sql
+
 ## Endpoints
 
 #### Must be login as user
