@@ -1,22 +1,23 @@
+const auth = require('./middleware/auth');
 var mysql = require('mysql');
 const express = require('express');
 const router = express.Router();
 const db = require('./db')();
 
 
-router.get('/:id', (req, res) => {
-  let sql = `select * from tickets where user_id=${req.params.id}`;
-  db.query(sql,function(error, results, fields) {
+
+router.get('/',auth, (req, res) => {
+  let sql = 'select * from tickets where user_id=?';
+  db.query(sql,[req.user.user_id],function(error, results, fields) {
     res.send(results);
   });
 });
 
 // {
-// 	"uid": 1,
 // 	"fcid": 1,
 // 	"fid": 4
 // }
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
   var tno, cn, cost, data; 
 
   data = req.body;
@@ -39,7 +40,7 @@ router.post('/', (req, res) => {
     confirmationNumber: cn,
     flightclass_id: data.fcid,
     flight_id: data.fid,
-    user_id: data.uid
+    user_id: req.user.user_id
   };
 
   var sql = "insert into tickets set ?";

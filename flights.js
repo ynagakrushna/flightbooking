@@ -3,9 +3,11 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db')();
 
+const auth = require('./middleware/auth');
+const admin = require('./middleware/admin');
 
 // List of flights
-router.get('/', (req, res) => {
+router.get('/',[auth, admin], (req, res) => {
   let sql = "select * from flights";
   db.query(sql, function(error, results, fields) {
     res.send(results);
@@ -20,7 +22,7 @@ router.get('/', (req, res) => {
 // 	"miles": 300
 // }
 
-router.post('/', (req, res) => {
+router.post('/',[auth, admin], (req, res) => {
   let data = req.body;
   let info = { 
     flight_number: data.number, 
@@ -34,6 +36,15 @@ router.post('/', (req, res) => {
   db.query(sql, info, function(error, results, fields) {
     if(!error) {
       res.send('Inserted sucessfully');
+    }
+  });
+});
+
+router.delete('/:id', [auth, admin], (req, res) => {
+  let sql = 'delete from flights where flight_id=?';
+  db.query(sql,[req.params.id], function(error, results, fields) {
+    if(!error) {
+      res.status(200).send('Flight has been removed from list');
     }
   });
 });

@@ -1,12 +1,18 @@
+const config = require('config');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 var mysql = require('mysql');
 const express = require('express');
 const router = express.Router();
 
 const db = require('./db')();
 
+const auth = require('./middleware/auth');
+const admin = require('./middleware/admin');
+
 
 // List of airlines
-router.get('/', (req, res) => {
+router.get('/', [auth, admin], (req, res) => {
   let sql = "select * from airlines";
   db.query(sql, function(error, results, fields) {
     res.send(results);
@@ -16,7 +22,7 @@ router.get('/', (req, res) => {
 // {
 // 	"name": "Air India"
 // }
-router.post('/', (req, res) => {
+router.post('/',[auth, admin], (req, res) => {
   let data = req.body;
   let info = { 
     name: data.name

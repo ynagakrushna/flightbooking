@@ -4,8 +4,11 @@ const router = express.Router();
 
 const db = require('./db')();
 
+const auth = require('./middleware/auth');
+const admin = require('./middleware/admin');
+
 // List of Airports
-router.get('/', (req, res) => {
+router.get('/', [auth, admin], (req, res) => {
   let sql = "select * from airports";
   db.query(sql, function(error, results, fields) {
     res.send(results);
@@ -19,7 +22,7 @@ router.get('/', (req, res) => {
 // 	"state": "Maharastra"
 // }
 
-router.post('/', (req, res) => {
+router.post('/',[auth, admin], (req, res) => {
   let data = req.body;
   let info = { 
     iata_code: data.iata,
@@ -38,7 +41,7 @@ router.post('/', (req, res) => {
 
 // flight asscoiated airports
 
-router.get('/flights', (req, res) => {
+router.get('/flights',[auth, admin], (req, res) => {
   let sql = "select f.flight_number, a.name from flights_has_airports fa join airports a on fa.airport_id = a.airport_id join flights f on fa.flight_id = f.flight_id";
   db.query(sql, function(error, results, fields) {
     res.send(results);
@@ -49,7 +52,7 @@ router.get('/flights', (req, res) => {
 // 	"flight_id": 8,
 // 	"airport_id": 3
 // }
-router.post('/flights', (req, res) => {
+router.post('/flights',[auth, admin], (req, res) => {
   let data = req.body;
   let info = { 
     flight_id: data.flight_id,
