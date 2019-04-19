@@ -1,8 +1,10 @@
-const auth = require('./middleware/auth');
 var mysql = require('mysql');
+const shortid = require('shortid');
 const express = require('express');
 const router = express.Router();
+
 const db = require('./db')();
+const auth = require('./middleware/auth');
 
 
 
