@@ -4,7 +4,7 @@ function db_con() {
   return mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : '14542614',
+    password : `${process.env.PASSWORD}`,
     database : 'airways',
     multipleStatements: true
   });

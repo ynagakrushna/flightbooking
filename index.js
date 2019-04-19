@@ -20,14 +20,15 @@ app.use('/api/flights', flight);
 app.use('/api/airlines', airline);
 app.use('/api/airports', airport);
 
-
-
-
+db.connect(function(err) {
+  if (err) {
+    console.error('error connecting: ' + err.stack);
+    return;
+  }
+ 
+  console.log('connected as id ' + db.threadId);
+});
 
 var port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening at port ${port}`));
 
-
-module.exports.db = db;
-module.exports.mysql = mysql;
-module.exports.shortid = shortid;
